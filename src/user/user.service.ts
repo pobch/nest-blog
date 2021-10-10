@@ -1,9 +1,10 @@
 import { Prisma, User } from '@prisma/client'
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { PrismaService } from 'src/prisma.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import * as argon2 from 'argon2'
+import { BadRequestError } from 'src/errors/BadRequestError'
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,7 @@ export class UserService {
       },
     })
     if (userNotUnique) {
-      throw new BadRequestException('E-mail is already exist')
+      throw new BadRequestError(['email is already exist'])
     }
 
     const hashedPassword = await argon2.hash(createUserDto.password)
