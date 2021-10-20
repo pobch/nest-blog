@@ -1,8 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common'
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
 import { UserService } from './user.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { LoginUserDto } from './dto/login-user.dto'
+import { AuthGuard } from './auth.guard'
+import { UserProp } from './user.decorator'
 
 @Controller('users')
 export class UserController {
@@ -16,6 +18,12 @@ export class UserController {
   @Post('login')
   async login(@Body() loginUserDto: LoginUserDto): Promise<{ email: string; token: string }> {
     return this.userService.login(loginUserDto)
+  }
+
+  @Get('me')
+  @UseGuards(AuthGuard)
+  findMe(@UserProp() user: { id: number; email: string }) {
+    return user
   }
 
   @Get()
