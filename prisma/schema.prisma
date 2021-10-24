@@ -15,8 +15,6 @@ model User {
   email         String        @unique
   password      String
   articles      Article[]
-  firstName     String?
-  lastName      String?
 }
 
 model Article {
