@@ -5,7 +5,7 @@ import { UpdateArticleDto } from './dto/update-article.dto'
 
 @Injectable()
 export class ArticleService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(createArticleDto: CreateArticleDto, authorId: number) {
     const article = await this.prisma.article.create({
