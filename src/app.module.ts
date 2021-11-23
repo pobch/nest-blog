@@ -4,6 +4,7 @@ import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
 import { ArticleModule } from './article/article.module'
 import { LoggerModule } from 'nestjs-pino'
+import * as path from 'path'
 
 @Module({
   imports: [
@@ -11,7 +12,18 @@ import { LoggerModule } from 'nestjs-pino'
     ArticleModule,
     LoggerModule.forRoot({
       pinoHttp: {
-        // transport: { target: 'pino-pretty' },
+        transport: {
+          targets: [
+            {
+              target: 'pino-pretty',
+              options: { translateTime: true },
+            },
+            {
+              target: 'pino/file',
+              options: { destination: path.join(__dirname, 'log.log') },
+            },
+          ],
+        },
       },
     }),
   ],
