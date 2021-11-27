@@ -1,4 +1,6 @@
 import { Injectable } from '@nestjs/common'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime'
+import { BadRequestError } from 'src/errors/BadRequestError'
 import { PrismaService } from 'src/prisma.service'
 import { CreateArticleDto } from './dto/create-article.dto'
 import { UpdateArticleDto } from './dto/update-article.dto'
@@ -45,15 +47,27 @@ export class ArticleService {
     return articles
   }
 
+  async remove(id: number) {
+    try {
+      const deletedArticle = await this.prisma.article.delete({
+        where: {
+          id,
+        },
+      })
+      return deletedArticle
+    } catch (e) {
+      if (e instanceof PrismaClientKnownRequestError && e.code === 'P2025') {
+        throw new BadRequestError(['the article is not exist'])
+      }
+      throw e
+    }
+  }
+
   // findOne(id: number) {
   //   return `This action returns a #${id} article`
   // }
 
   // update(id: number, updateArticleDto: UpdateArticleDto) {
   //   return `This action updates a #${id} article`
-  // }
-
-  // remove(id: number) {
-  //   return `This action removes a #${id} article`
   // }
 }

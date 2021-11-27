@@ -24,6 +24,11 @@ export class ArticleController {
     return this.articleService.findAll()
   }
 
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    return this.articleService.remove(+id)
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.articleService.findOne(+id)
@@ -32,10 +37,5 @@ export class ArticleController {
   // @Patch(':id')
   // update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
   //   return this.articleService.update(+id, updateArticleDto)
-  // }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.articleService.remove(+id)
   // }
 }
