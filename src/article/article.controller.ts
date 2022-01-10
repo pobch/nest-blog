@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Logger,
+} from '@nestjs/common'
 import { AuthGuard } from 'src/user/auth.guard'
 import { UserProp } from 'src/user/user.decorator'
 import { ArticleService } from './article.service'
@@ -7,6 +17,8 @@ import { UpdateArticleDto } from './dto/update-article.dto'
 
 @Controller('articles')
 export class ArticleController {
+  // private readonly logger = new Logger(ArticleController.name)
+
   constructor(private readonly articleService: ArticleService) {}
 
   @Post()
@@ -27,6 +39,12 @@ export class ArticleController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.articleService.remove(+id)
+  }
+
+  @Get('my-articles')
+  @UseGuards(AuthGuard)
+  async findAllOwn(@UserProp() user: { id: number; email: string }) {
+    return this.articleService.findAllByAuthorId(user.id)
   }
 
   // @Get(':id')

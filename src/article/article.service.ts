@@ -63,6 +63,20 @@ export class ArticleService {
     }
   }
 
+  async findAllByAuthorId(authorId: number) {
+    const user = await this.prisma.user.findUnique({
+      select: {
+        articles: {
+          include: {
+            author: { select: { id: true, email: true } },
+          },
+        },
+      },
+      where: { id: authorId },
+    })
+    return user.articles
+  }
+
   // findOne(id: number) {
   //   return `This action returns a #${id} article`
   // }
