@@ -10,6 +10,7 @@ import {
   Logger,
 } from '@nestjs/common'
 import { AuthGuard } from 'src/user/auth.guard'
+import { TUserProp } from 'src/user/types/userProp'
 import { UserProp } from 'src/user/user.decorator'
 import { ArticleService } from './article.service'
 import { CreateArticleDto } from './dto/create-article.dto'
@@ -23,10 +24,7 @@ export class ArticleController {
 
   @Post()
   @UseGuards(AuthGuard)
-  async create(
-    @UserProp() user: { id: number; email: string },
-    @Body() createArticleDto: CreateArticleDto
-  ) {
+  async create(@UserProp() user: TUserProp, @Body() createArticleDto: CreateArticleDto) {
     const userId = user.id
     return this.articleService.create(createArticleDto, userId)
   }
@@ -43,7 +41,7 @@ export class ArticleController {
 
   @Get('my-articles')
   @UseGuards(AuthGuard)
-  async findAllOwn(@UserProp() user: { id: number; email: string }) {
+  async findAllOwn(@UserProp() user: TUserProp) {
     return this.articleService.findAllByAuthorId(user.id)
   }
 

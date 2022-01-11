@@ -5,24 +5,25 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { LoginUserDto } from './dto/login-user.dto'
 import { AuthGuard } from './auth.guard'
 import { UserProp } from './user.decorator'
+import { TUserProp } from './types/userProp'
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto): Promise<{ email: string }> {
+  async create(@Body() createUserDto: CreateUserDto): Promise<TUserProp> {
     return this.userService.create(createUserDto)
   }
 
   @Post('login')
-  async login(@Body() loginUserDto: LoginUserDto): Promise<{ email: string; token: string }> {
+  async login(@Body() loginUserDto: LoginUserDto): Promise<TUserProp & { token: string }> {
     return this.userService.login(loginUserDto)
   }
 
   @Get('me')
   @UseGuards(AuthGuard)
-  findMe(@UserProp() user: { id: number; email: string }) {
+  findMe(@UserProp() user: TUserProp): TUserProp {
     return user
   }
 

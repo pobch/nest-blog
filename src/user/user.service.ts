@@ -8,12 +8,14 @@ import { BadRequestError } from 'src/errors/BadRequestError'
 import { LoginUserDto } from './dto/login-user.dto'
 import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from 'src/configs/jwt-secret'
+import { ROLE } from './types/role'
+import { TUserProp } from './types/userProp'
 
 @Injectable()
 export class UserService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(createUserDto: CreateUserDto): Promise<{ email: string }> {
+  async create(createUserDto: CreateUserDto): Promise<TUserProp> {
     const userNotUnique = await this.prisma.user.findUnique({
       where: {
         email: createUserDto.email,
@@ -28,17 +30,21 @@ export class UserService {
     const data = {
       email: createUserDto.email,
       password: hashedPassword,
+      role: ROLE.BASIC,
     }
 
-    return this.prisma.user.create({
+    const createdUser = await this.prisma.user.create({
       data: data,
       select: {
+        id: true,
         email: true,
+        role: true,
       },
     })
+    return createdUser
   }
 
-  async login(loginUserDto: LoginUserDto): Promise<{ email: string; token: string }> {
+  async login(loginUserDto: LoginUserDto): Promise<TUserProp & { token: string }> {
     const userInDb = await this.prisma.user.findUnique({
       where: {
         email: loginUserDto.email,
@@ -57,7 +63,7 @@ export class UserService {
 
     const token = generateJWT(userInDb)
 
-    return { email: userInDb.email, token: token }
+    return { id: userInDb.id, email: userInDb.email, role: userInDb.role, token: token }
   }
 
   // findAll() {
@@ -80,13 +86,14 @@ export class UserService {
 function generateJWT(user: User): string {
   const today = new Date()
   const exp = new Date(today)
-  exp.setDate(today.getDate() + 60)
+  exp.setDate(today.getDate() + 1)
 
   return jwt.sign(
     {
       id: user.id,
       email: user.email,
       exp: exp.getTime() / 1000,
+      role: user.role,
     },
     JWT_SECRET
   )

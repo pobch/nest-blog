@@ -2,6 +2,7 @@ import { CanActivate, ExecutionContext, ForbiddenException, Injectable } from '@
 import { Observable } from 'rxjs'
 import * as jwt from 'jsonwebtoken'
 import { JWT_SECRET } from 'src/configs/jwt-secret'
+import { TUserProp } from './types/userProp'
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -22,7 +23,8 @@ export class AuthGuard implements CanActivate {
     request.user = {
       id: decodedToken.id,
       email: decodedToken.email,
-    }
+      role: decodedToken.role,
+    } as TUserProp
 
     return true
   }
