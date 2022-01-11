@@ -4,4 +4,5 @@
 set -ex
 
 # Seeding command
-sqlite3 prisma/dev.db < prisma/seed.sql
+# Use -bail to stop execute the next SQL cmd when an error occurred
+sqlite3 -bail prisma/dev.db < prisma/seed.sql
