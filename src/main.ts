@@ -13,7 +13,7 @@ async function bootstrap() {
     new ValidationPipe({
       exceptionFactory: (errors) => {
         const formattedErrors = errors.flatMap((error) => {
-          return Object.values(error.constraints)
+          return Object.values(error.constraints ?? {})
         })
 
         return new BadRequestError(formattedErrors)

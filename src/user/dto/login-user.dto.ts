@@ -3,9 +3,9 @@ import { IsNotEmpty, IsString } from 'class-validator'
 export class LoginUserDto {
   @IsNotEmpty()
   @IsString()
-  readonly email: string
+  readonly email!: string
 
   @IsNotEmpty()
   @IsString()
-  readonly password: string
+  readonly password!: string
 }

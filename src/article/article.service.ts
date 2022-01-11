@@ -74,6 +74,9 @@ export class ArticleService {
       },
       where: { id: authorId },
     })
+    if (user === null) {
+      return []
+    }
     return user.articles
   }
 

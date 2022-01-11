@@ -17,7 +17,11 @@ export class AuthGuard implements CanActivate {
     try {
       decodedToken = jwt.verify(token, JWT_SECRET) as jwt.JwtPayload
     } catch (e) {
-      throw new ForbiddenException(e.message)
+      if (e instanceof Error) {
+        throw new ForbiddenException(e.message)
+      }
+      // ! Should not reach here
+      throw e
     }
 
     request.user = {
