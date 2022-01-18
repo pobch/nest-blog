@@ -18,6 +18,7 @@ async function bootstrap() {
 
         return new BadRequestError(formattedErrors)
       },
+      whitelist: true,
     })
   )
 

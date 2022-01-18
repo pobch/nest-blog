@@ -64,27 +64,24 @@ export class ArticleService {
   }
 
   async findAllByAuthorId(authorId: number) {
-    const user = await this.prisma.user.findUnique({
-      select: {
-        articles: {
-          include: {
-            author: { select: { id: true, email: true } },
-          },
-        },
+    const articles = await this.prisma.article.findMany({
+      where: {
+        authorId: authorId,
       },
-      where: { id: authorId },
+      include: {
+        author: { select: { id: true, email: true } },
+      },
     })
-    if (user === null) {
-      return []
-    }
-    return user.articles
+
+    return articles
+  }
+
+  async update(id: number, updateArticleDto: UpdateArticleDto) {
+    const article = await this.prisma.article.update({ where: { id: id }, data: updateArticleDto })
+    return article
   }
 
   // findOne(id: number) {
   //   return `This action returns a #${id} article`
-  // }
-
-  // update(id: number, updateArticleDto: UpdateArticleDto) {
-  //   return `This action updates a #${id} article`
   // }
 }

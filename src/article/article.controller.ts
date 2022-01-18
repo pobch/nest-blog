@@ -45,13 +45,13 @@ export class ArticleController {
     return this.articleService.findAllByAuthorId(user.id)
   }
 
+  @Patch(':id')
+  async update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
+    return this.articleService.update(+id, updateArticleDto)
+  }
+
   // @Get(':id')
   // findOne(@Param('id') id: string) {
   //   return this.articleService.findOne(+id)
-  // }
-
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
-  //   return this.articleService.update(+id, updateArticleDto)
   // }
 }
